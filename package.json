@@ -1,0 +1,34 @@
+{
+  "name": "solid-parkui",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "bun run --bun vite build .",
+    "dev": "bun run --bun vite",
+    "lint": "biome lint ./src",
+    "prepare": "panda codegen",
+    "preview": "vite preview",
+    "typecheck": "tsc"
+  },
+  "dependencies": {
+    "@ark-ui/solid": "2.2.0",
+    "@modular-forms/solid": "^0.20.0",
+    "@solidjs/router": "^0.12.4",
+    "lucide-solid": "^0.344.0",
+    "solid-js": "1.8.15",
+    "solid-transition-group": "^0.2.3",
+    "valibot": "^0.29.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.5.3",
+    "@pandacss/dev": "^0.33.0",
+    "@park-ui/panda-preset": "0.36.0",
+    "solid-devtools": "^0.29.3",
+    "typescript": "5.3.3",
+    "vite": "5.1.4",
+    "vite-plugin-solid": "2.10.1",
+    "vite-tsconfig-paths": "4.3.1"
+  },
+  "packageManager": "bun@1.0.29"
+}
