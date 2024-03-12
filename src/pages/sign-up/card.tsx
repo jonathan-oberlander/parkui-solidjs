@@ -5,12 +5,14 @@ import {
   valiForm,
 } from '@modular-forms/solid'
 import { useNavigate } from '@solidjs/router'
+
 import { Stack, VStack, styled } from 'styled-system/jsx'
 import * as v from 'valibot'
+
 import { TextInput } from '~/components/form'
 import { SpinnerDots } from '~/components/icon'
-import { Button, Text } from '~/components/ui'
-import { Card } from '~/components/ui'
+import { toast } from '~/components/lib'
+import { Button, Card, Text } from '~/components/ui'
 
 const LoginSchema = v.object({
   email: v.string([
@@ -28,25 +30,30 @@ const LoginSchema = v.object({
 
 type LoginForm = v.Input<typeof LoginSchema>
 
+class LoginError extends Error {
+  constructor(
+    public name: string,
+    public message: string,
+    public values: Partial<LoginForm>,
+  ) {
+    super(message)
+  }
+}
+
 const fakeEndpoint = (values: LoginForm) =>
   new Promise<LoginForm>((resolve, reject) =>
     setTimeout(() => {
-      if (Math.random() > 0.2) {
+      if (Math.random() < 0) {
         resolve(values)
       } else {
-        reject({
-          message: 'An error has occurred.',
-          values: {
+        reject(
+          new LoginError('Login Error', 'An error has occurred.', {
             email: 'email has been blacklisted',
-          },
-        })
+          }),
+        )
       }
     }, Math.random() * 200),
   )
-
-class LoginFormError extends Error {
-  values!: LoginForm
-}
 
 export const SignUpCard = () => {
   const navigate = useNavigate()
@@ -55,14 +62,19 @@ export const SignUpCard = () => {
     validate: valiForm(LoginSchema),
   })
 
-  const handleSubmit: SubmitHandler<LoginForm> = async (values, event) => {
+  const onSubmit: SubmitHandler<LoginForm> = async (values, event) => {
     event.preventDefault()
 
     try {
       const response = await fakeEndpoint(values)
-      navigate('/app', { state: { response } })
+      navigate('/inbox', { state: { response } })
     } catch (error) {
-      if (error instanceof LoginFormError) {
+      if (error instanceof LoginError) {
+        toast().create({
+          title: error.name,
+          description: error.message,
+          id: 'login-error',
+        })
         throw new FormError<LoginForm>(error.message, error.values)
       }
     }
@@ -84,7 +96,7 @@ export const SignUpCard = () => {
             framework.
           </Card.Description>
         </Card.Header>
-        <Form onSubmit={handleSubmit}>
+        <Form onSubmit={onSubmit}>
           <Card.Body>
             <Stack gap="4">
               <Field name="email">
@@ -117,11 +129,11 @@ export const SignUpCard = () => {
           </Card.Body>
           <Card.Footer>
             <VStack w="full">
-              <Text size="sm" color="tomato">
+              {/* <Text size="sm" color="tomato">
                 {loginForm.response.message && (
                   <em>{loginForm.response.message}</em>
                 )}
-              </Text>
+              </Text> */}
               <Button
                 type="submit"
                 width="full"
@@ -136,52 +148,3 @@ export const SignUpCard = () => {
     </styled.div>
   )
 }
-
-/* 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  <Stack direction="row" gap="3">
-    <Button type="button" variant="outline" width="full">
-      Google
-    </Button>
-    <Button type="button" variant="outline" width="full">
-      GitHub
-    </Button>
-  </Stack> 
-*/
-
-/* 
-  <HStack gap="2">
-    <Divider />
-    <styled.p
-      color="fg.subtle"
-      textStyle="sm"
-      whiteSpace="nowrap"
-    >
-      sign in
-    </styled.p>
-    <Divider />
-  </HStack> 
-*/

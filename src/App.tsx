@@ -5,6 +5,9 @@ import {
   onMount,
 } from 'solid-js'
 
+import { Link, Meta, MetaProvider } from '@solidjs/meta'
+import { Toaster } from './components/lib'
+
 export const App: ParentComponent = props => {
   const mql = matchMedia('(prefers-color-scheme: light)')
 
@@ -19,5 +22,12 @@ export const App: ParentComponent = props => {
   createEffect(() => mql.addEventListener('change', setColorMode))
   onCleanup(() => mql.removeEventListener('change', setColorMode))
 
-  return <>{props.children}</>
+  return (
+    <MetaProvider>
+      <Link rel="canonical" href="http://solidjs.com/" />
+      <Meta name="example" content="whatever" />
+      {props.children}
+      <Toaster />
+    </MetaProvider>
+  )
 }

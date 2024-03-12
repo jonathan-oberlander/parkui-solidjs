@@ -14,6 +14,7 @@
   "dependencies": {
     "@ark-ui/solid": "2.2.0",
     "@modular-forms/solid": "^0.20.0",
+    "@solidjs/meta": "^0.29.3",
     "@solidjs/router": "^0.12.4",
     "lucide-solid": "^0.344.0",
     "solid-js": "1.8.15",

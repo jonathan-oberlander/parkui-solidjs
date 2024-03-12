@@ -4,6 +4,9 @@ import solid from 'vite-plugin-solid'
 import tsconfigPaths from 'vite-tsconfig-paths'
 
 export default defineConfig({
+  build: {
+    minify: 'esbuild',
+  },
   server: {
     port: 3000,
   },
